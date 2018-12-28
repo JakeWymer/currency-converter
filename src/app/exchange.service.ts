@@ -20,8 +20,9 @@ export class ExchangeService {
   }
 
   getHistoricalRates(base, to) {
-    let endDate = moment().format('YYYY-M-D');
-    let startDate = moment().businessSubtract(31).format('YYYY-M-D');
+    const DATE_FORMAT = 'YYYY-M-D';
+    let endDate = moment().format(DATE_FORMAT);
+    let startDate = moment().businessSubtract(31).format(DATE_FORMAT);
 
     this.http.get(`https://api.exchangeratesapi.io/history?start_at=${startDate}&end_at=${endDate}&base=${base}&symbols=${to}`)
     .subscribe((data: ExchangeService) => {
@@ -67,13 +68,17 @@ export class ExchangeService {
     return {min, max};
   }
 
+
+  //Map Y values to new values within 1-max canvas height
   private getAdjustedY(exchangeRange, rates, to, currentDate) {
+    const MAX_CANVAS_Y_VALUE = 300;
     let adjustedY = null;
+
 
     if(exchangeRange.max - exchangeRange.min === 0) {
       adjustedY = 1;
     } else {
-      adjustedY = (((rates[currentDate][to] - exchangeRange.min) * (300 - 1)) / (exchangeRange.max - exchangeRange.min)) + 1;
+      adjustedY = (((rates[currentDate][to] - exchangeRange.min) * (MAX_CANVAS_Y_VALUE - 1)) / (exchangeRange.max - exchangeRange.min)) + 1;
     }
 
     return adjustedY;

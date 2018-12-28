@@ -44,12 +44,14 @@ export class GraphComponent implements OnInit {
   }
 
   populateGraphNodes() {
-    return Array(30).fill({}).map((val, i) => {
+    const NUMBER_OF_NODES = 30;
+
+    return Array(NUMBER_OF_NODES).fill({}).map((val, i) => {
       return ({
         data: {id: i, value: 1},
         position: { 
-          x: (window.innerWidth / 22) * i,
-          y: 100
+          x: (window.innerWidth / NUMBER_OF_NODES) * i,
+          y: 150
         },
         selectable: false,
       });
@@ -57,17 +59,18 @@ export class GraphComponent implements OnInit {
   }
 
   populateGraphEdges(graphNodes) {
-    return graphNodes.map((node, i) => {
-      if(i !== graphNodes.length - 1) {
-        return {
-          data: {
-            id: `${i}${i + 1}e`,
-            source: `${i}`,
-            target: `${i + 1}`
-          }
-        }
-      }
-    }).slice(0, graphNodes.length - 1);
-  }
+    let edges = [];
 
+    for(let i = 0; i < graphNodes.length - 1; i++) {
+      edges.push({
+        data: {
+          id: `${i}-${i + 1}`,
+          source: `${i}`,
+          target: `${i + 1}`
+        }
+      });
+    }
+
+    return edges;
+  }
 }
