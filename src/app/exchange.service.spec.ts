@@ -26,24 +26,9 @@ describe('ExchangeService', () => {
 
     service.getHistoricalRates('USD', 'USD');
 
-    const DATE_FORMAT = 'YYYY-M-D'; 
-    const tomorrow = moment().add(1, 'd');
-    const endDate = service.getPreviousBusinessDay(tomorrow);
-    let dayCount = 0;
-    let startDate = moment(tomorrow);
+    const dateRange = service.getStartAndEndDates();
 
-    while(dayCount < 30) {
-      startDate = moment(startDate.subtract(1, 'day'));
-
-      if(service.isWorkday(startDate)) {
-        dayCount += 1;
-      }
-    }
-
-    const startDateString = startDate.format(DATE_FORMAT);
-    const endDateString = endDate.format(DATE_FORMAT);
-
-    const req = httpMock.expectOne(`https://api.exchangeratesapi.io/history?start_at=${startDateString}&end_at=${endDateString}&base=USD&symbols=USD`);
+    const req = httpMock.expectOne(`https://api.exchangeratesapi.io/history?start_at=${dateRange.start}&end_at=${dateRange.end}&base=USD&symbols=USD`);
     
     expect(req.request.method).toEqual('GET');
 

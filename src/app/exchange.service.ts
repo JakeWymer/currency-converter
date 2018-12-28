@@ -20,6 +20,16 @@ export class ExchangeService {
   }
 
   getHistoricalRates(base, to) {
+    const dateRange = this.getStartAndEndDates();
+
+    this.http.get(`https://api.exchangeratesapi.io/history?start_at=${dateRange.start}&end_at=${dateRange.end}&base=${base}&symbols=${to}`)
+    .subscribe((data: ExchangeService) => {
+      let newGraphPoints = this.calculateNewGraphPoints(data, to);
+      this.historicalRatesSource.next(newGraphPoints);
+    });
+  }
+
+  private getStartAndEndDates() {
     const DATE_FORMAT = 'YYYY-M-D'; 
     const tomorrow = moment().add(1, 'd');
     const endDate = this.getPreviousBusinessDay(tomorrow);
@@ -34,14 +44,7 @@ export class ExchangeService {
       }
     }
 
-    const startDateString = startDate.format(DATE_FORMAT);
-    const endDateString = endDate.format(DATE_FORMAT);
-
-    this.http.get(`https://api.exchangeratesapi.io/history?start_at=${startDateString}&end_at=${endDateString}&base=${base}&symbols=${to}`)
-    .subscribe((data: ExchangeService) => {
-      let newGraphPoints = this.calculateNewGraphPoints(data, to);
-      this.historicalRatesSource.next(newGraphPoints);
-    });
+    return {start: startDate.format(DATE_FORMAT), end: endDate.format(DATE_FORMAT)};
   }
 
   private isWorkday(currentDay) {
