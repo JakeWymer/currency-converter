@@ -18,7 +18,9 @@ export class GraphComponent implements OnInit {
       style: [{
         selector: 'node',
         style: {
-          'label': 'data(value)'
+          "text-wrap": "wrap",
+          'label': 'data(value)',
+          'font-size': 12
         }
       }],
     });
@@ -33,7 +35,7 @@ export class GraphComponent implements OnInit {
 
     this.exchangeService.historicalRates.subscribe(rates => {
       cy.nodes().forEach((node, i) => {
-        node.data('value', rates[i].value.toFixed(4));
+        node.data('value', rates[i].value);
         node.animate({
           position: {x: node.position('x'), y: rates[i].position.y},
         }, {

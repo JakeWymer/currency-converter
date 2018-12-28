@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import { ExchangeService } from './exchange.service';
-import * as moment from 'moment-business-days';
+import * as moment from 'moment';
 
 describe('ExchangeService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -26,10 +26,24 @@ describe('ExchangeService', () => {
 
     service.getHistoricalRates('USD', 'USD');
 
-    let endDate = moment().format('YYYY-M-D');
-    let startDate = moment().businessSubtract(31).format('YYYY-M-D');
+    const DATE_FORMAT = 'YYYY-M-D'; 
+    const tomorrow = moment().add(1, 'd');
+    const endDate = service.getPreviousBusinessDay(tomorrow);
+    let dayCount = 0;
+    let startDate = moment(tomorrow);
 
-    const req = httpMock.expectOne(`https://api.exchangeratesapi.io/history?start_at=${startDate}&end_at=${endDate}&base=USD&symbols=USD`);
+    while(dayCount < 30) {
+      startDate = moment(startDate.subtract(1, 'day'));
+
+      if(service.isWorkday(startDate)) {
+        dayCount += 1;
+      }
+    }
+
+    const startDateString = startDate.format(DATE_FORMAT);
+    const endDateString = endDate.format(DATE_FORMAT);
+
+    const req = httpMock.expectOne(`https://api.exchangeratesapi.io/history?start_at=${startDateString}&end_at=${endDateString}&base=USD&symbols=USD`);
     
     expect(req.request.method).toEqual('GET');
 
