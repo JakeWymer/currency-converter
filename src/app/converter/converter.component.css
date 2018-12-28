@@ -1,0 +1,16 @@
+.form-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.form-group > * {
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    font-size: 20px;
+}

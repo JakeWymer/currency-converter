@@ -1,0 +1,34 @@
+<div class="form-container">
+    <div class="form-group">
+        <input 
+            type="text" 
+            [(ngModel)]="fromInput" 
+            placeholder="From" 
+            (keyup)="convertCurrency($event, 'from')"
+            appNumbersOnly="true"
+            id="from-input"/>
+        <select 
+            (change)="handleDropdown()"
+            [(ngModel)]="fromSelected">
+            <option *ngFor="let symbol of symbols" [value]="symbol">{{symbol}}</option>
+        </select>
+    </div>
+    <div>
+        <h2>{{conversionRate}}</h2>
+        <img src="assets/arrow.PNG" />
+    </div>
+    <div class="form-group">
+        <input 
+            type="text" 
+            [(ngModel)]="toInput" 
+            placeholder="To"
+            (keyup)="convertCurrency($event, 'to')"
+            appNumbersOnly="true"
+            id="to-input"/>
+        <select 
+            (change)="handleDropdown()"
+            [(ngModel)]="toSelected">
+            <option *ngFor="let symbol of symbols" [value]="symbol">{{symbol}}</option>
+        </select>
+    </div>
+</div>
